@@ -2,18 +2,6 @@ const CompilerType = {
   PYTHON: 'python',
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const compilerFactory = new CompilerFactory();
-
-  const compilers = ['1'];
-
-  compilers.forEach((compilerId) => {
-    const compiler = compilerFactory.createCompiler(compilerId);
-    compiler.initialize();
-  });
-});
-
-
 class Compiler {
   constructor(compilerId) {
     this.compilerId = compilerId;
@@ -32,15 +20,12 @@ class Compiler {
     this.HandleInputRef = null;
   }
 
-
-
   handleInputKeyDown(event) {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.sendInput();
     }
   }
-
 
   sendInput() {
     this.socket.emit('prompt', this.uuid, this.HandleInputRef.value);
@@ -91,10 +76,9 @@ class Compiler {
     this.HandleInputRef = document.querySelector(`#HandleInput${this.compilerId}`);
     this.HandleInputRef.addEventListener('keydown', this.handleInputKeyDown.bind(this));
 
-    document.querySelector(`#consoleGo${this.compilerId}`).addEventListener('click', this.consoleGo.bind(this));
-    document.querySelector(`#resultSend${this.compilerId}`).addEventListener('click', this.ResultSend.bind(this));
-    document.querySelector(`#saveCodeToFile${this.compilerId}`).addEventListener('click', this.saveCodeToFile.bind(this));
     document.querySelector(`#HandleInputGO${this.compilerId}`).addEventListener('click', this.sendInput.bind(this));
+    document.querySelector(`#consoleGo${this.compilerId}`).addEventListener('click', this.consoleGo.bind(this));
+    document.querySelector(`#saveCodeToFile${this.compilerId}`).addEventListener('click', this.saveCodeToFile.bind(this));
 
     this.socket.on('response', this.handleResponse.bind(this));
     this.socket.on('processend', this.handleProcessEnd.bind(this));
@@ -104,8 +88,6 @@ class Compiler {
       this.socket.off('processend');
     });
   }
-
-
 
   saveCodeToFile() {
     const userInput = this.editorInput.getValue();
@@ -127,7 +109,18 @@ class Compiler {
 
 class CompilerFactory {
   createCompiler(compilerId) {
-    return new Compiler(compilerId);
+    const compiler = new Compiler(compilerId);
+    compiler.initialize();
+    return compiler;
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const compilerFactory = new CompilerFactory();
+
+  const compilers = ['1', '2', '3'];
+
+  compilers.forEach((compilerId) => {
+    compilerFactory.createCompiler(compilerId);
+  });
+});
