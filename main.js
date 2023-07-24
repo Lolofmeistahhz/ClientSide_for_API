@@ -7,10 +7,10 @@ class Compiler {
     this.compilerId = compilerId;
     this.urlExecute = `https://api-compiler.onrender.com/api/${CompilerType.PYTHON}/run`;
     this.baseUrl = 'https://api-compiler.onrender.com';
-    this.WSbaseUrl = 'ws://api-compiler.onrender.com:8000';
+    this.WSbaseUrl = 'wss://api-compiler.onrender.com:8000';
 
     this.socket_config = {
-      path: '/ws/socket.io',
+      path: '/wss/socket.io',
       transports: ['websocket', 'polling', 'flashsocket'],
     };
     this.socket = io(this.WSbaseUrl, this.socket_config);
